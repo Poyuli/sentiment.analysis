@@ -24,15 +24,15 @@ Following are 10-fold cross validation scores for different machine learning alg
 (or OOB Score for Random Forest) 
 
 # Random Forest
-0.82752
+0.82752 (n_estimators=100)
 
 RF does not suit well in text data, since RF makes the split based on randomly selected feature. 
 Text data are sparse vectors, and we may select and split based on irrelevant features.
 
 
 # Gaussian NB 
-0.7348 (int counts) 
-0.8008 (tf-idf)
+0.7348 (int counts)     
+0.8008 (tf-idf)     
 0.7194 (word2vec/avg(vec))
 
 tf-idf may make distribution more Gaussian
