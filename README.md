@@ -1,6 +1,6 @@
 # sentiment.analysis
 
-Sentiment Analysis of IMDB Movie Reviews Using word2vec and scikit-learn
+Sentiment analysis of IMDB movie reviews using word2vec and scikit-learn
 
 We extracted the raw texts from IMDB movie reviews, and classified them to be positive if their ratings are higher than or equal to 7, negative if lower than or equal to 4. Neutral reviews are not included in this dataset. 
 
@@ -51,8 +51,8 @@ bigram/unigram further improves accuracy as it may make feature more focused.
 
 
 # Bernoulli NB
-0.8517
-0.8496 (bigram)
+0.8517                  
+0.8496 (bigram)             
 0.8606 (bigram/unigram)
 
 Note that Bernoulli NB is different from binary multinomial NB, since Bernoulli NB penalizes absence of words by multiplying 1-p, 
@@ -60,15 +60,15 @@ where p = Prob(x_i|y) and x_i is the i-th feature.
 
 
 # Linear SVM
-0.8851 (binary counts, bigram/unigram)
-0.8873 (int counts, bigram/unigram)
-0.8802 (word2vec/avg(vec), dim=500, scaling=standard)
-0.8922 (tf-idf, bigram/unigram)
-0.8843 (tf-idf, bigram/unigram, dim=500)
-0.8845 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on)
-0.8871 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=standard)      
-0.8868 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=unsigned)
-0.8863 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=signed)
+0.8851 (binary counts, bigram/unigram)              
+0.8873 (int counts, bigram/unigram)             
+0.8802 (word2vec/avg(vec), dim=500, scaling=standard)       
+0.8922 (tf-idf, bigram/unigram)     
+0.8843 (tf-idf, bigram/unigram, dim=500)        
+0.8845 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on)       
+0.8871 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=standard)             
+0.8868 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=unsigned)     
+0.8863 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=signed)       
 0.8618 (tf-idf, bigram/unigram, dim=100, sublinear_tf=on, scaling=unsigned)
 
 avg(word2vec) does not make sense as it also ignores the order of words.
