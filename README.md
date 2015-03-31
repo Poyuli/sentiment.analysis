@@ -23,48 +23,53 @@ Default setting:
 Following are 10-fold cross validation scores for different machine learning algorithms:
 (or OOB Score for Random Forest) 
 
-RF: 0.82752
+# Random Forest
+0.82752
 
 RF does not suit well in text data, since RF makes the split based on randomly selected feature. 
 Text data are sparse vectors, and we may select and split based on irrelevant features.
 
 
-Gaussian NB: 0.7348 (int counts) 
-             0.8008 (tf-idf)
-             0.7194 (word2vec/avg(vec))
+# Gaussian NB 
+0.7348 (int counts) 
+0.8008 (tf-idf)
+0.7194 (word2vec/avg(vec))
 
 tf-idf may make distribution more Gaussian
 
 
-Multinomial NB:  0.8483 (int counts) 
-                 0.8528 (int counts, bigram)
-                 0.8488 (int counts, bigram/unigram)
-                 0.8534 (binary counts)
-                 0.8546 (binary counts, bigram)
-                 0.8636 (binary counts, bigram/unigram)
+# Multinomial NB
+0.8483 (int counts)                  
+0.8528 (int counts, bigram)                
+0.8488 (int counts, bigram/unigram)                 
+0.8534 (binary counts)                 
+0.8546 (binary counts, bigram)                 
+0.8636 (binary counts, bigram/unigram)
 
 bigram improves accuracy as it does not remove negation words.
 bigram/unigram further improves accuracy as it may make feature more focused.
 
 
-Bernoulli NB: 0.8517
-              0.8496 (bigram)
-              0.8606 (bigram/unigram)
+# Bernoulli NB
+0.8517
+0.8496 (bigram)
+0.8606 (bigram/unigram)
 
 Note that Bernoulli NB is different from binary multinomial NB, since Bernoulli NB penalizes absence of words by multiplying 1-p, 
 where p = Prob(x_i|y) and x_i is the i-th feature.
 
 
-Linear SVM: 0.8851 (binary counts, bigram/unigram)
-            0.8873 (int counts, bigram/unigram)
-            0.8802 (word2vec/avg(vec), dim=500, scaling=standard)
-            0.8922 (tf-idf, bigram/unigram)
-            0.8843 (tf-idf, bigram/unigram, dim=500)
-            0.8845 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on)
-            0.8871 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=standard)      
-            0.8868 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=unsigned)
-            0.8863 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=signed)
-            0.8618 (tf-idf, bigram/unigram, dim=100, sublinear_tf=on, scaling=unsigned)
+# Linear SVM
+0.8851 (binary counts, bigram/unigram)
+0.8873 (int counts, bigram/unigram)
+0.8802 (word2vec/avg(vec), dim=500, scaling=standard)
+0.8922 (tf-idf, bigram/unigram)
+0.8843 (tf-idf, bigram/unigram, dim=500)
+0.8845 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on)
+0.8871 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=standard)      
+0.8868 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=unsigned)
+0.8863 (tf-idf, bigram/unigram, dim=500, sublinear_tf=on, scaling=signed)
+0.8618 (tf-idf, bigram/unigram, dim=100, sublinear_tf=on, scaling=unsigned)
 
 avg(word2vec) does not make sense as it also ignores the order of words.
 
@@ -74,5 +79,8 @@ Truncated SVD reduces the dimension directly based on the data.
 
 Therefore we choose truncated SVD for dimension reduction.
 
-# Summary: Linear SVM with tf-idf and bigram/unigram vectorizing yields the best result with 89.22% accuracy
-# Future work: Use doc2vec to learn sentence vectors instead of averaging word2vec vectors
+# Summary
+Linear SVM with tf-idf and bigram/unigram vectorizing yields the best result with 89.22% accuracy
+
+# Future work
+Use doc2vec to learn sentence vectors instead of averaging word2vec vectors
