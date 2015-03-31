@@ -20,8 +20,8 @@ Default setting:
 5. For feature scaling, "standard" methods scale data to be centered around 0 with unit variance; "unsigned" methods scale data to have the max value 1 and min value 0; "signed" methods scale data to have the max value 1 and min value -1.
 
 
-Following are 10-fold cross validation scores for different machine learning algorithms:
-(or OOB Score for Random Forest) 
+Following are 10-fold cross validation scores for different machine learning algorithms
+(or OOB Score for Random Forest):
 
 # Random Forest
 0.82752 (n_estimators=100)
@@ -30,7 +30,7 @@ RF does not suit well in text data, since RF makes the split based on randomly s
 Text data are sparse vectors, and we may select and split based on irrelevant features.
 
 
-# Gaussian NB 
+# Gaussian Naive Bayes 
 0.7348 (int counts)     
 0.8008 (tf-idf)     
 0.7194 (word2vec/avg(vec))
@@ -38,7 +38,7 @@ Text data are sparse vectors, and we may select and split based on irrelevant fe
 tf-idf may make distribution more Gaussian
 
 
-# Multinomial NB
+# Multinomial Naive Bayes
 0.8483 (int counts)                  
 0.8528 (int counts, bigram)                
 0.8488 (int counts, bigram/unigram)                 
@@ -50,13 +50,13 @@ bigram improves accuracy as it does not remove negation words.
 bigram/unigram further improves accuracy as it may make feature more focused.
 
 
-# Bernoulli NB
+# Bernoulli Naive Bayes
 0.8517                  
 0.8496 (bigram)             
 0.8606 (bigram/unigram)
 
 Note that Bernoulli NB is different from binary multinomial NB, since Bernoulli NB penalizes absence of words by multiplying 1-p, 
-where p = Prob(x_i|y) and x_i is the i-th feature.
+where p = Prob(x_i|y) and x_i is the i-th feature which does not appear in the given sample.
 
 
 # Linear SVM
