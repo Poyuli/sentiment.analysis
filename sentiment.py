@@ -13,19 +13,20 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier as RFC
 from sklearn.cross_validation import cross_val_score
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_selection.univariate_selection import chi2, SelectKBest
 
 os.chdir("/Users/BradLi/Documents/Data Science/Kaggle/Sentiment")
 
 
 ##################### Initialization #####################
 
-write_to_csv = True
+write_to_csv = False
 
 # term_vector_type = {"TFIDF", "Binary", "Int", "Word2vec", "Word2vec_pretrained"}
 # {"TFIDF", "Int", "Binary"}: Bag-of-words model with {tf-idf, word counts, presence/absence} representation
 # {"Word2vec", "Word2vec_pretrained"}: Google word2vec representation {without, with} pre-trained models
 # Specify model_name if there's a pre-trained model to be loaded
-vector_type = "Word2vec_pretrained"
+vector_type = "TFIDF"
 model_name = "GoogleNews-vectors-negative300.bin"
 
 # model_type = {"bin", "reg"}
@@ -40,16 +41,17 @@ num_workers = 4       # Number of threads to run in parallel
 context = 10          # Context window size                                                                                    
 downsampling = 1e-3   # Downsample setting for frequent words
 
-# training_model = {"RF", "NB", "SVM", "no"}
-training_model = "SVM"
+# training_model = {"RF", "NB", "SVM", "BT", "no"}
+training_model = "NB"
 
 # feature scaling = {"standard", "signed", "unsigned", "no"}
 # Note: Scaling is needed for SVM
-scaling = "standard"
+scaling = "no"
 
-# dimension reduction = {"SVD", "no"}
+# dimension reduction = {"SVD", "chi2", "no"}
 # Note: For NB models, we cannot perform truncated SVD as it will make input negative
-dim_reduce = "no"
+# chi2 is the feature selectioin based on chi2 independence test
+dim_reduce = "chi2"
 num_dim = 500
 
 ##################### End of Initialization #####################
@@ -291,6 +293,11 @@ if dim_reduce == "SVD":
     test_vec = svd.transform(test_vec)
     print "Explained variance ratio =", svd.explained_variance_ratio_.sum()
 
+elif dim_reduce == "chi2":
+    print "Performing feature selection based on chi2 independence test"
+    fselect = SelectKBest(chi2, k=num_dim)
+    train_vec = fselect.fit_transform(train_vec, train_data.sentiment)
+    test_vec = fselect.transform(test_vec)
 
 # Transform into numpy arrays
 if "numpy.ndarray" not in str(type(train_vec)):
@@ -313,16 +320,20 @@ if scaling != "no":
     train_vec = scaler.fit_transform(train_vec)
     test_vec = scaler.transform(test_vec)
     
+    
 # Model training 
-if training_model == "RF":
-    rfc = RFC(n_estimators = 100, oob_score = True)
+if training_model == "RF" or training_model == "BT":
+    
+    # Initialize the Random Forest or bagged tree based the model chosen
+    rfc = RFC(n_estimators = 100, oob_score = True, \
+              max_features = (None if training_model=="BT" else "auto"))
+    print "Training %s" % ("Random Forest" if training_model=="RF" else "bagged tree")
     rfc = rfc.fit(train_vec, train_data.sentiment)
-    print "Training Ranfom Forest model"
     print "OOB Score =", rfc.oob_score_
     pred = rfc.predict(test_vec)
     
 elif training_model == "NB":
-    nb = naive_bayes.GaussianNB()
+    nb = naive_bayes.MultinomialNB()
     cv_score = cross_val_score(nb, train_vec, train_data.sentiment, cv=10)
     print "Training Naive Bayes"
     print "CV Score = ", cv_score.mean()
@@ -355,13 +366,16 @@ if write_to_csv:
 # 3. tf does not take logarithms (sublinear_tf = False)
 
 
-### 10-fold CV Score (or OOB Score for Random Forest) 
+### 10-fold CV Score (or OOB Score for Random Forest and bagged tree) 
 
-# RF: 0.82752
+# RF: 0.8306 (TFIDF, dim(chi2)=500, sublinear_tf=on) 
 
 ### RF does not suit well in text data,
 ### since RF makes the split based on randomly selected feature,
 ### while text data are sparse vectors and we may select and split based on irrelevant features
+
+
+# Bagged tree: 0.8115 (TFIDF, dim(chi2)=500, sublinear_tf=on)
 
 
 # Gaussian NB: 0.7348 (int counts) 
@@ -407,7 +421,7 @@ if write_to_csv:
 ### PCA reduces the dimension based on covariance matrix, which is expensive computationally
 ### LDA is also computationaly expensive when both num_feature and num_sample are large
 ### Truncated SVD reduces the dimension directly based on the data
-### Therefore we choose truncated SVD for dimension reductioin
+### Therefore we choose truncated SVD for dimension reduction
 
 ### Summary: Linear SVM with tf-idf and bigram/unigram vectorizing yields the best result with 89.22% accuracy
 ### Future work: Use doc2vec to learn sentence vectors instead of averaging word2vec vectors
