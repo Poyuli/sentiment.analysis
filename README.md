@@ -74,7 +74,8 @@ where p = Prob(x_i|y) and x_i is the i-th feature which does not appear in the g
 avg(word2vec) does not make sense as it also ignores the order of words.
 
 PCA reduces the dimension based on covariance matrix, which is expensive computationally. 
-LDA is also computationaly expensive when both num_feature and num_sample are large. 
+LDA is also computationaly expensive when both num_feature and num_sample are large.
+Besides, P(x|y) is not so Gaussian, which violates the assumption for LDA.
 Truncated SVD reduces the dimension directly based on the data.
 
 Therefore we choose truncated SVD for dimension reduction.
